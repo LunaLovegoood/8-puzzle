@@ -9,18 +9,24 @@
 #include <iostream>
 #include <array>
 
+enum class Direction {DOWN, LEFT, UP, RIGHT};
+
 class GameField
 {
 public:
-    GameField() = delete;
+    GameField() {};
     GameField(std::array< std::array< char, 3 >, 3 > field);
+
+    GameField move(Direction direction);
+
+    bool operator==(const GameField& field) const;
 
     friend std::ostream& operator<<(std::ostream &stream, const GameField &field);
 
 private:
     static const int size_ = 3;
 
-    char field_[3][3];
+    char field_[3][3]{ ' ' };
 };
 
 #endif // !GAME_FIELD_H_

@@ -21,13 +21,23 @@ const std::array< std::array< char, 3 >, 3 > resulting_field = { {
     {'7', '8', ' '}
 } };
 
+const Direction directions[4] = { Direction::DOWN, Direction::LEFT, Direction::UP, Direction::RIGHT };
+
+void breadth_search();
+
 int main()
 {
-    GameField field{ initial_field };
-
-    std::cout << field;
+    breadth_search();
 
     system("pause");
 
     return 0;
+}
+
+void breadth_search()
+{
+    std::list< GameField > conditions{ initial_field };
+    int level = 0;
+
+
 }
