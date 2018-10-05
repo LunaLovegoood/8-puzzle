@@ -6,13 +6,21 @@
 #ifndef GAME_FIELD_H_
 #define GAME_FIELD_H_
 
+#include <iostream>
+#include <array>
+
 class GameField
 {
 public:
-    GameField() {}
+    GameField() = delete;
+    GameField(std::array< std::array< char, 3 >, 3 > field);
+
+    friend std::ostream& operator<<(std::ostream &stream, const GameField &field);
 
 private:
+    static const int size_ = 3;
 
+    char field_[3][3];
 };
 
 #endif // !GAME_FIELD_H_
