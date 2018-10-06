@@ -15,6 +15,12 @@ GameField::GameField(std::array< std::array< char, 3 >, 3 > field)
         for (int j = 0; j < size_; j++)
         {
             field_[i][j] = field.at(i).at(j);
+
+            if (field_[i][j] == ' ')
+            {
+                row_blank = i;
+                col_blank = j;
+            }
         }
     }
 }
@@ -23,23 +29,86 @@ GameField GameField::move(Direction direction)
 {
     GameField result;
 
-    // TODO: implement moving
     switch (direction)
     {
     case Direction::DOWN:
+        move_down(result);
         break;
 
     case Direction::LEFT:
+        move_left(result);
         break;
 
     case Direction::UP:
+        move_up(result);
         break;
 
     case Direction::RIGHT:
+        move_right(result);
         break;
     }
 
     return result;
+}
+
+void GameField::move_down(GameField &field)
+{
+    if (row_blank == (size_ - 1))
+    {
+        return;
+    }
+
+    field = *this;
+
+    field.field_[row_blank][col_blank] = field_[row_blank + 1][col_blank];
+    field.field_[row_blank + 1][col_blank] = ' ';
+
+    field.row_blank++;
+}
+
+void GameField::move_left(GameField &field)
+{
+    if (col_blank == 0)
+    {
+        return;
+    }
+
+    field = *this;
+
+    field.field_[row_blank][col_blank] = field_[row_blank][col_blank - 1];
+    field.field_[row_blank][col_blank - 1] = ' ';
+
+    field.col_blank--;
+}
+
+void GameField::move_up(GameField &field)
+{
+    if (row_blank == 0)
+    {
+        return;
+    }
+
+    field = *this;
+
+    field.field_[row_blank][col_blank] = field_[row_blank - 1][col_blank];
+    field.field_[row_blank - 1][col_blank] = ' ';
+
+    field.row_blank--;
+}
+
+void GameField::move_right(GameField &field)
+{
+    if (col_blank == (size_ - 1))
+    {
+        return;
+    }
+
+    field = *this;
+
+    field.field_[row_blank][col_blank] = field_[row_blank][col_blank + 1];
+    field.field_[row_blank][col_blank + 1] = ' ';
+
+    field.col_blank++;
 }
 
 bool GameField::operator==(const GameField& field) const

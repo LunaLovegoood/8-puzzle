@@ -14,7 +14,7 @@ enum class Direction {DOWN, LEFT, UP, RIGHT};
 class GameField
 {
 public:
-    GameField() {};
+    GameField() {}
     GameField(std::array< std::array< char, 3 >, 3 > field);
 
     GameField move(Direction direction);
@@ -27,7 +27,13 @@ private:
     static const int size_ = 3;
 
     char field_[3][3]{ ' ' };
+    int row_blank{ -1 };
+    int col_blank{ -1 };
+
+    void move_down(GameField &field);
+    void move_left(GameField &field);
+    void move_up(GameField &field);
+    void move_right(GameField &field);
 };
 
-#endif // !GAME_FIELD_H_
-
+#endif // GAME_FIELD_H_
