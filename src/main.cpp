@@ -3,50 +3,85 @@
 // Yurii Khomiak licenses this file to you under the MIT license. 
 // See the LICENSE file in the project root for more information.
 
-#include "game_field.h"
+#include "game_board.h"
 
 #include <iostream>
 #include <list>
 #include <array>
-
-
-const std::array< std::array< char, 3 >, 3 > initial_field = { {
-    {'1', '8', '2'},
-    {'7', ' ', '3'},
-    {'6', '5', '4'}
-} };
-const std::array< std::array< char, 3 >, 3 > resulting_field = { {
-    {'1', '2', '3'},
-    {'4', '5', '6'},
-    {'7', '8', ' '}
-} };
+#include <algorithm>
 
 const Direction directions[4] = { Direction::DOWN, Direction::LEFT, Direction::UP, Direction::RIGHT };
 
 
-void breadth_search();
+GameBoard breadth_first_search(const GameBoard &initial, const GameBoard &target);
 
 
 int main()
 {
-    breadth_search();
+    const std::array< std::array< char, 3 >, 3 > initial_field = { {
+        {'1', '8', '2'},
+        {'7', ' ', '3'},
+        {'6', '5', '4'}
+    } };
+    const std::array< std::array< char, 3 >, 3 > target = { {
+        {'1', '2', '3'},
+        {'8', ' ', '4'},
+        {'7', '6', '5'}
+    } };
 
-    system("pause");
+    breadth_first_search(initial_field, target).show_path();
 
     return 0;
 }
 
-void breadth_search()
+GameBoard breadth_first_search(const GameBoard &initial, const GameBoard &target)
 {
-    std::list< GameField > conditions{ initial_field };
-    int level = 0;
+    std::list< GameBoard > conditions{ initial }; // storage of all added boards
+    int previous_level_board = 1; // number of boards added on previous level
+    int current_level_board = 0; // number of boards on current level
 
-    GameField field{ initial_field };
+    GameBoard temp;
+    char choice = 'y';
 
-    std::cout << field;
-    for (int i = 0; i < 4; i++)
+    for (int level = 1; ; level++, current_level_board = 0)
     {
-        field = field.move(directions[i]);
-        std::cout << field;
+        std::cout << "Level: " << level << "\n";
+
+        auto level_begin = std::next(conditions.end(), -previous_level_board);
+
+        for (int i = 0; i < previous_level_board; ++i, ++level_begin)
+        {
+            for (int j = 0; j < 4; ++j)
+            {
+                if (choice == 'y') {
+                    std::cout << "Step-by-step/Automatic enter (y/n): ";
+                    std::cin >> choice;
+                }
+
+                temp = (*level_begin).move(directions[j]);
+
+                if (!temp.is_init()) // Check if moving in the given direction is possible
+                {
+                    continue;
+                }
+                else if (conditions.end() == std::find(conditions.begin(), conditions.end(), temp)) // Check for duplicates
+                {
+                    if (temp == target) // Check if result is reached
+                    {
+                        return temp;
+                    }
+
+                    if (choice == 'y')
+                    {
+                        std::cout << temp;
+                    }
+                    conditions.push_back(temp);
+                    ++current_level_board;
+                }
+            }
+        }
+
+        std::cout << "Number of boards: " << current_level_board << "\n";
+        previous_level_board = current_level_board;
     }
 }
