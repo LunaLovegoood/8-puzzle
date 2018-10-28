@@ -1,4 +1,4 @@
-// Game of 8
+// 8-puzzle
 // Copyright (C) 2018 Yurii Khomiak 
 // Yurii Khomiak licenses this file to you under the MIT license. 
 // See the LICENSE file in the project root for more information.
@@ -29,7 +29,7 @@ GameBoard::GameBoard(std::array< std::array< char, 3 >, 3 > board)
     is_init_ = true;
 }
 
-GameBoard GameBoard::move(Direction direction) const
+GameBoard GameBoard::move(Direction direction) const noexcept
 {
     GameBoard result;
 
@@ -55,7 +55,7 @@ GameBoard GameBoard::move(Direction direction) const
     return result;
 }
 
-void GameBoard::move_down(GameBoard &board) const
+void GameBoard::move_down(GameBoard &board) const noexcept
 {
     if (row_blank_ == (size_ - 1))
     {
@@ -64,6 +64,7 @@ void GameBoard::move_down(GameBoard &board) const
 
     board = *this;
 
+    // Swap blank cell with lower cell
     board.board_[row_blank_][col_blank_] = board_[row_blank_ + 1][col_blank_];
     board.board_[row_blank_ + 1][col_blank_] = ' ';
 
@@ -72,7 +73,7 @@ void GameBoard::move_down(GameBoard &board) const
     ++board.row_blank_;
 }
 
-void GameBoard::move_left(GameBoard &board) const
+void GameBoard::move_left(GameBoard &board) const noexcept
 {
     if (col_blank_ == 0)
     {
@@ -81,6 +82,7 @@ void GameBoard::move_left(GameBoard &board) const
 
     board = *this;
 
+    // Swap blank cell with left cell
     board.board_[row_blank_][col_blank_] = board_[row_blank_][col_blank_ - 1];
     board.board_[row_blank_][col_blank_ - 1] = ' ';
 
@@ -89,7 +91,7 @@ void GameBoard::move_left(GameBoard &board) const
     --board.col_blank_;
 }
 
-void GameBoard::move_up(GameBoard &board) const
+void GameBoard::move_up(GameBoard &board) const noexcept
 {
     if (row_blank_ == 0)
     {
@@ -98,6 +100,7 @@ void GameBoard::move_up(GameBoard &board) const
 
     board = *this;
 
+    // Swap blank cell with upper cell
     board.board_[row_blank_][col_blank_] = board_[row_blank_ - 1][col_blank_];
     board.board_[row_blank_ - 1][col_blank_] = ' ';
 
@@ -106,7 +109,7 @@ void GameBoard::move_up(GameBoard &board) const
     --board.row_blank_;
 }
 
-void GameBoard::move_right(GameBoard &board) const
+void GameBoard::move_right(GameBoard &board) const noexcept
 {
     if (col_blank_ == (size_ - 1))
     {
@@ -115,6 +118,7 @@ void GameBoard::move_right(GameBoard &board) const
 
     board = *this;
 
+    // Swap blank cell with right cell
     board.board_[row_blank_][col_blank_] = board_[row_blank_][col_blank_ + 1];
     board.board_[row_blank_][col_blank_ + 1] = ' ';
 
@@ -123,9 +127,9 @@ void GameBoard::move_right(GameBoard &board) const
     ++board.col_blank_;
 }
 
-void GameBoard::show_path() const
+void GameBoard::show_path() const noexcept
 {
-    std::list<GameBoard> path;
+    auto path = std::list<GameBoard>{};
     auto trace = std::make_shared<GameBoard>(*this);
 
     while (trace != nullptr)
@@ -134,20 +138,20 @@ void GameBoard::show_path() const
         trace = trace->parent;
     }
 
-    auto iter = path.rbegin();
+    auto iter = path.crbegin();
     while (iter != path.rend())
     {
         std::cout << *(iter++);
     }
 }
 
-bool GameBoard::operator==(const GameBoard& board) const
+bool operator==(const GameBoard& lhs, const GameBoard& rhs)
 {
-    for (int i = 0; i < size_; i++)
+    for (int i = 0; i < lhs.size_; i++)
     {
-        for (int j = 0; j < size_; j++)
+        for (int j = 0; j < lhs.size_; j++)
         {
-            if (board_[i][j] != board.board_[i][j])
+            if (lhs.board_[i][j] != rhs.board_[i][j])
             {
                 return false;
             }
@@ -155,6 +159,11 @@ bool GameBoard::operator==(const GameBoard& board) const
     }
 
     return true;
+}
+
+bool operator!=(const GameBoard& lhs, const GameBoard& rhs)
+{
+    return !(lhs == rhs);
 }
 
 std::ostream& operator<<(std::ostream &stream, const GameBoard &board)

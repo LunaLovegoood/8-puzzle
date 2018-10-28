@@ -1,6 +1,6 @@
-﻿# Game of 8
+﻿# 8-puzzle
 
-Solving game of 8
+Solving 8-puzzle with different algorithms using C++
 
 ---
 
