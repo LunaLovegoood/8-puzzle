@@ -16,11 +16,14 @@ const auto target_board = std::array< std::array< char, 3 >, 3 >{ {
     {'7', '6', '5'}
 } };
 
+
 int main()
 {
-    breadth_first_search(initial_board, target_board).show_path();
+    std::cout << "Breadth first search path:";
+    breadth_first_search(GameBoard<3>(initial_board), GameBoard<3>(target_board)).show_path();
 
-    depth_first_search(initial_board, target_board).show_path();
+    std::cout << "Depth first search path:";
+    depth_first_search(GameBoard<3>(initial_board), GameBoard<3>(target_board)).show_path();
 
     system("pause");
 
