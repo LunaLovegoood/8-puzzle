@@ -1,6 +1,6 @@
-﻿# 8-puzzle
+﻿# n-puzzle
 
-Solving 8-puzzle with different algorithms using C++
+Solving n-puzzle with different algorithms using C++
 
 ---
 
